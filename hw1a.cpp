@@ -15,7 +15,7 @@ struct node{
 /*
 vector<node> guns;
 vector<node> c_guns;*/
-node guns[1000000], c_guns[1000000];
+node guns[100000], c_guns[100000];
 int c_guns_size=0;
 
 int main(){
@@ -43,7 +43,6 @@ void insertion(){
         //guns.push_back(gun);
         guns[i]=gun;
         
-    
         //insertion
         for(int j=0; j<i; j++){
             if(gun.x<guns[j].x){
@@ -85,7 +84,7 @@ double conquer(double center, double range, int BC_l, int BC_r){
     c_guns_size=0;
 
     for(int i=BC_l; i<BC_r; i++){
-        if((center-range<guns[i].x)&&(guns[i].x<center+range)){
+        if((center-range<=guns[i].x)&&(guns[i].x<=center+range)){
             //c_guns.push_back(guns[i]);
             c_guns[c_guns_size++]=guns[i];
 
@@ -116,11 +115,14 @@ double conquer(double center, double range, int BC_l, int BC_r){
         }
     }
     else{
-        for(int j=0; j<c_guns_size-4; j++){
-            for(int k=1; k<=4; k++){
+        for(int j=0; j<c_guns_size-1; j++){
+            for(int k=1; (j+k)<c_guns_size; k++){
                 L2_norm=pow(pow(c_guns[j].x-c_guns[j+k].x, 2)+pow(c_guns[j].y-c_guns[j+k].y, 2),0.5);
                 if(L2_norm<min_distance)
                     min_distance=L2_norm;
+                
+                if (k=5)
+                    break;
             }
         }
 
