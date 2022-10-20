@@ -35,12 +35,12 @@ int main(){
 }
 
 void insertion(){
-    int left=0, right=0, p;
+    int l=0, r=0, p;
     //guns.clear();
     node gun;
     cin>> n;
     for(int i=0; i<n; i++){
-        left=0;
+        l=0;
         p=i;
         cin>> gun.x>> gun.y;
         //guns.push_back(gun);
@@ -60,25 +60,28 @@ void insertion(){
         if(guns[0].x>=gun.x){
             p=0;
         }
+        else if(guns[r].x<=gun.x){
+            p=i;
+        }
         else{
-            while((right-left)>1){
-                if(guns[(right+left)/2].x==gun.x){
-                    p=(right+left)/2;
+            while((r-l)>1){
+                if(guns[(r+l)/2].x==gun.x){
+                    p=(r+l)/2;
                     break;
                 }
-                else if(guns[(right+left)/2].x>gun.x)
-                    right=(right+left)/2;
+                else if(guns[(r+l)/2].x>gun.x)
+                    r=(r+l)/2;
                 else
-                    left=(right+left)/2;
+                    l=(r+l)/2;
 
-                p=right;
+                p=r;
             }
         }
         for(int k=i-1; k>=p; k--){
             guns[k+1]=guns[k]; //move data around
         }
         guns[p]=gun;
-        right=i;
+        r=i;
     }
     return;
     
@@ -101,6 +104,7 @@ double divide(int i, int j){
 }
 //conquer
 double conquer(double center, double range, int BC_l, int BC_r){
+    int l=0, r=0, p;
     int first=BC_l, end=BC_l;
     int left, right;
     double min_distance, L2_norm;
@@ -113,13 +117,12 @@ double conquer(double center, double range, int BC_l, int BC_r){
     for(int i=BC_l; i<BC_r; i++){
         if((center-range<=guns[i].x)&&(guns[i].x<=center+range)){
             //c_guns.push_back(guns[i]);
-            c_guns[c_guns_size++]=guns[i];
-            left=0;
-            right=c_guns_size;
-
-
+            //c_guns[c_guns_size++]=guns[i];
+            //left=0;
+            //right=c_guns_size;
 
             //insertion sort
+            /*
             for(int j=0; j<i; j++){
                 if(guns[i].y<c_guns[j].y){
                     for(int k=i; k>j; k--){
@@ -128,7 +131,38 @@ double conquer(double center, double range, int BC_l, int BC_r){
                     c_guns[j]=guns[i];
                     break;
                 }
+            }*/
+            l=0;
+            p=c_guns_size;
+            c_guns[p]=guns[i];
+
+            if(c_guns[0].y>=guns[i].y){
+                p=0;
             }
+            else if(c_guns[r].y<=guns[i].y){
+                p=c_guns_size;
+            }
+            else{
+                while((r-l)>1){
+                    if(c_guns[(r+l)/2].y==guns[i].y){
+                        p=(r+l)/2;
+                        break;
+                    }
+                    else if(c_guns[(r+l)/2].y>guns[i].y)
+                        r=(r+l)/2;
+                    else
+                        l=(r+l)/2;
+
+                    p=r;
+                }
+            }
+            for(int k=c_guns_size-1; k>=p; k--){
+                c_guns[k+1]=c_guns[k]; //move data around
+            }
+            c_guns[p]=guns[i];
+            r=c_guns_size;
+            c_guns_size++;
+            
         }
 
     }   
@@ -151,7 +185,7 @@ double conquer(double center, double range, int BC_l, int BC_r){
                 if(L2_norm<min_distance)
                     min_distance=L2_norm;
                 
-                if (k=7)
+                if (k==7)
                     break;
             }
         }
