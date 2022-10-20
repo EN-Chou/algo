@@ -15,7 +15,7 @@ struct node{
 /*
 vector<node> guns;
 vector<node> c_guns;*/
-node guns[100000], c_guns[100000];
+node guns[10000], c_guns[10000];
 int c_guns_size=0;
 
 int main(){
@@ -35,15 +35,18 @@ int main(){
 }
 
 void insertion(){
+    int left=0, right=0, p;
     //guns.clear();
     node gun;
     cin>> n;
     for(int i=0; i<n; i++){
+        left=0;
+        p=i;
         cin>> gun.x>> gun.y;
         //guns.push_back(gun);
-        guns[i]=gun;
         
-        //insertion
+        //insertion sort
+        /*
         for(int j=0; j<i; j++){
             if(gun.x<guns[j].x){
                 for(int k=i; k>j; k--){
@@ -53,6 +56,29 @@ void insertion(){
                 break;
             }
         }
+        */
+        if(guns[0].x>=gun.x){
+            p=0;
+        }
+        else{
+            while((right-left)>1){
+                if(guns[(right+left)/2].x==gun.x){
+                    p=(right+left)/2;
+                    break;
+                }
+                else if(guns[(right+left)/2].x>gun.x)
+                    right=(right+left)/2;
+                else
+                    left=(right+left)/2;
+
+                p=right;
+            }
+        }
+        for(int k=i-1; k>=p; k--){
+            guns[k+1]=guns[k]; //move data around
+        }
+        guns[p]=gun;
+        right=i;
     }
     return;
     
@@ -76,9 +102,10 @@ double divide(int i, int j){
 //conquer
 double conquer(double center, double range, int BC_l, int BC_r){
     int first=BC_l, end=BC_l;
+    int left, right;
     double min_distance, L2_norm;
     node gun;
-    min_distance=pow(pow(guns[first].x-guns[first+1].x, 2)+pow(guns[first].y-guns[first+1].y, 2),0.5);
+    min_distance=pow(pow(guns[BC_l].x-guns[BC_l+1].x, 2)+pow(guns[BC_l].y-guns[BC_l+1].y, 2),0.5);
 
     //c_guns.clear();
     c_guns_size=0;
@@ -87,9 +114,12 @@ double conquer(double center, double range, int BC_l, int BC_r){
         if((center-range<=guns[i].x)&&(guns[i].x<=center+range)){
             //c_guns.push_back(guns[i]);
             c_guns[c_guns_size++]=guns[i];
+            left=0;
+            right=c_guns_size;
 
 
-            //insertion
+
+            //insertion sort
             for(int j=0; j<i; j++){
                 if(guns[i].y<c_guns[j].y){
                     for(int k=i; k>j; k--){
@@ -101,19 +131,19 @@ double conquer(double center, double range, int BC_l, int BC_r){
             }
         }
 
-    }
+    }   
 
 
     //Compute
     if(c_guns_size==0)//(c_guns.size()==0)
-        return min_distance;
+        return min_distance;/*
     else if(c_guns_size<=5){
         for(int k=1; k<=c_guns_size-1; k++){
             L2_norm=pow(pow(c_guns[0].x-c_guns[k].x, 2)+pow(c_guns[0].y-c_guns[k].y, 2),0.5);
             if(L2_norm<min_distance)
                 min_distance=L2_norm;
         }
-    }
+    }*/
     else{
         for(int j=0; j<c_guns_size-1; j++){
             for(int k=1; (j+k)<c_guns_size; k++){
@@ -121,7 +151,7 @@ double conquer(double center, double range, int BC_l, int BC_r){
                 if(L2_norm<min_distance)
                     min_distance=L2_norm;
                 
-                if (k=5)
+                if (k=7)
                     break;
             }
         }
