@@ -1,7 +1,7 @@
+// bug in insertion
 # include "iostream"
 # include "iomanip"
 # include "math.h"
-# include "vector"
 using namespace std;
 
 void insertion();
@@ -13,9 +13,10 @@ struct node{
     double x,y;
 };
 
-
+/*
 vector<node> guns;
-vector<node> c_guns;
+vector<node> c_guns;*/
+node guns[10], c_guns[10];
 int c_guns_size=0;
 
 int main(){
@@ -34,14 +35,14 @@ int main(){
 
 void insertion(){
     int l=0, r=0, pivot; //pivot is where to insert
-    guns.clear();
+    //guns.clear();
     node gun;
     cin>> n;
     for(int i=0; i<n; i++){
         l=0;
         pivot=i;
         cin>> gun.x>> gun.y;
-        guns.push_back(gun);
+        //guns.push_back(gun);
         
        //Binary search 
         if(guns[0].x>=gun.x)    pivot=0;
@@ -90,19 +91,20 @@ double conquer(double center, double range, int BC_l, int BC_r){
     node gun;
     min_distance=pow(pow(guns[BC_l].x-guns[BC_l+1].x, 2)+pow(guns[BC_l].y-guns[BC_l+1].y, 2),0.5);
 
-    c_guns.clear();
+    //c_guns.clear();
+    c_guns_size=0;
 
     for(int i=BC_l; i<BC_r; i++){
         if((center-range<=guns[i].x)&&(guns[i].x<=center+range)){
-            c_guns.push_back(guns[i]);
+            //c_guns.push_back(guns[i]);
 
             //Binary search
             l=0;
-            pivot=c_guns.size();
-            c_guns.push_back(guns[i]);
+            pivot=c_guns_size;
+            c_guns[pivot]=guns[i];
 
             if(c_guns[0].y>=guns[i].y)    pivot=0;
-            else if(c_guns[r].y<=guns[i].y)    pivot=c_guns.size()-1;
+            else if(c_guns[r].y<=guns[i].y)    pivot=c_guns_size;
             else{
                 while((r-l)>1){
                     if(c_guns[(r+l)/2].y==guns[i].y){
@@ -115,19 +117,19 @@ double conquer(double center, double range, int BC_l, int BC_r){
                     pivot=r;
                 }
             }
-            
+
             //move data around
-            for(int k=c_guns.size()-1; k>pivot; k--){
+            for(int k=c_guns_size; k>pivot; k--){
                 c_guns[k]=c_guns[k-1]; 
             }
             c_guns[pivot]=guns[i];
-            r=c_guns.size();
+            r=c_guns_size;
             c_guns_size++;  
         }
     }   
 
     //Find minimum distance in the center zone
-    if(c_guns.size()==0)
+    if(c_guns_size==0)//(c_guns.size()==0)
         return min_distance;
     else{
         for(int j=0; j<c_guns_size-1; j++){
